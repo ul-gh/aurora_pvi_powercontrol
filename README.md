@@ -7,9 +7,7 @@ Current value of electric power consumption (in watts / kilowatts) are recorded 
 
 This way, a zero-feed-in solar system can be realised.
 
-The energy meter is attached using the ESP8266 based Tasmota Smart-Meter interface using any of the interfaces supported (D0 wired / infrared, Modbus etc.), the values are received via MQTT.
-
-https://tasmota.github.io/docs/Smart-Meter-Interface/
+The energy meter is attached using the ESP8266 based [Tasmota Smart Meter Interface](https://tasmota.github.io/docs/Smart-Meter-Interface) using any of the interfaces supported (D0 wired / infrared, Modbus etc.), the values are received via MQTT.
 
 In case the MQTT or smart meter connection is lost, a watch-dog timer engages shuting down the solar inverter.
 
