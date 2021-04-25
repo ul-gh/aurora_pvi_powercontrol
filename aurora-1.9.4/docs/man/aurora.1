@@ -1,0 +1,173 @@
+.TH aurora 1 "21 Jan 2016" aurora "aurora"
+.SH NAME
+\fBaurora\fP \- communicate with an Magnetek/Power One/ABB Aurora Photovoltaic (solar) Power Inverter
+
+.SH SYNOPSIS
+.BI "aurora [Options] -a InverterAddress Device"
+
+.SH "REQUIRED PARAMETERS"
+.TP
+.B -a <num>, --address=<num>
+Inverter address. 1-31 on older inverters, 1-63 on newer inverters.
+.TP
+.B Device
+Serial Device.  Example, \fI/dev/ttyUSB0\fP or \fI/dev/ttyS0\fP.
+
+.SH OPTIONS
+.TP
+.B -A, --last-alarms
+Get last four alarms (once displayed FIFO queue is cleared)
+.TP
+.B -b, --verbose
+Verbose mode. For maximum effectiveness should be the first option on the command line
+.TP
+.B -C <num[:$]>, --calc-value=<num[:$]>
+Calculate monetary value using <num> * kWh. ":$" is optional and if included the character(s) represented by the "$" will be used to denote monetary type in the output. Defaults to "$"
+.TP
+.B -c, --columnize
+Output data in columns --> for -d, -e, -D, -3, -E, -t options only, will disable all other options -- if value ends with an "*" reporting of that item may not be in inverters firmware
+.TP
+.B -d <num>, --get-dsp=<num>
+Get DSP data <num> indicates string to get data for. 0 indicates both 1 for only string 1, 2 for only string 2. <num> is required for short option and <num> is optional for long option and if omitted for long option data for both input strings will be retrieved
+.TP
+.B -D, --get-dsp-extended
+Get more DSP data
+.TP
+.B -3, --get-dsp-3phase
+Get 3-Phase DSP data
+.TP
+.B -e, --get-energy
+Get Cumulated Energy readings (Excluding Central)
+.TP
+.B -E <num>, --get-energy-central=<num>
+Get Cumulated Float Energy readings (Central & TRIO only) <num> days 1 to 366 Default 366 <num> is required for short option and optional for long option
+.TP
+.B -f, --firmware-ver
+Query for Firmware Version string
+.TP
+.B -g, --mfg-date
+Query for Inverter Manufacturing Date
+.TP
+.B -h, --help
+This text
+.TP
+.B -i <bitmask>, --get-count=<bitmask>
+Display Inverter Time Counters <bitmask> is required for short option is optional for long option and if omitted for long option then all counters will be displayed and Partial counter will be reset
+.RS
+1 = "Total Run Time"    4 = "Grid Connection Time"
+.RE
+.RS
+2 = "Partial Run Time"  8 = "Reset Partial Run Time"
+.RE
+.TP
+.B -j, --get-joules
+Display Energy accumulated in the last 10 seconds
+.TP
+.B -K, --use-kmult=<num>
+Adjust vaules reported by -k, --daily-kwh by "<num>" multiplier
+.TP
+.B -k <num>, --daily-kwh=<num>
+Get past daily KWH for <num> days (1-366) <num> is optional for long option and if omitted all 366 days or as many that are found will be displayed. It is suggested that the -Y option be used with this due to the extensive length of time it takes to get all the data from the inverter
+.TP
+.B -L <num>, --adjust-time=<num>
+Automatically adjust the inverter time if it differs from the computer time. If <num> is 0 (zero) do a Daylight Savings Time check. If <num> is >= 1 change the inverter time if it differs by <num> or more seconds. See the README for more information and the constraints this option uses to the determine if the time should be changed due to Daylight Savings Time
+.TP
+.B -l <num>, --read-wait=<num>
+Timeout for the read to the serial port. <num> in 1/10ths seconds. Default is 1 (0.1 sec). See the README file for important information on this option
+.TP
+.B -M <num>, --max-runtime=<num>
+Maximum amount of time in seconds that aurora will run trying to get data from the inverter
+.TP
+.B -m, --get-conf
+Query for Inverter System Configuration
+.TP
+.B -n, --serial-number
+Query for Inverter Serial Number
+.TP
+.B -N <num>, --central=<num> ** Experimental **
+Indicates Aurora Central 0 indicates Master, 1 indicates Slave
+.TP
+.B -o <filename>, --output-file=<filename>
+Append data to file (Created if nonexistant) Note: If -c option is used only -d, -e, -D, -3, -E, -t, & -T options will output to file
+.TP
+.B -O, --part-number-central
+Query for Inverter Part Number (Central only)
+.TP
+.B -p, --part-number
+Query for Inverter Part Number
+.TP
+.B -P <num>, --comm-pause=<num>
+Wait <num> uS between sending commands to inverter (1-1000000)
+.TP
+.B -Q, --use-qmult
+Use inverter specific multiplier if known to adjust values reported by -q, --energy-sent
+.TP
+.B
+-q <num>, --energy-sent=<num> ** Experimental **
+Get past energy delivered to the grid at 10 second intervals for <num> minutes (1-1440) starting with the oldest data available. <num> is optional for long option and if omitted all data, ~24 hours worth will be reported. It is suggested that the -Y option be used with this due to the extensive length of time it takes to get all the data from the inverter. See the README file for important information on this option
+.TP
+.B
+-R <num>, --read-timeout=<num>
+Serial port read retry timeout value when reading a character from the Inverter (mS - minimum 200) See the README file for important information on this option
+.TP
+.B -r, --calc-grid-power
+Calc Grid power using Grid Voltage * Grid Current, instead of reporting the Inverter's value. --> for -d option only, ignored when used with -c option.  (Inverter typically reports a lower value. This affects Inverter conversion efficiency value.)
+.TP
+.B -S, --set-time
+Set Inverter Date/Time to system time
+.TP
+.B -s, --get-state
+Get Inverter State
+.TP
+.B -T, --get-loctime
+Display computer Date/Time
+.TP
+.B -t, --get-invtime
+Display Inverter Date/Time
+.TP
+.B -U <num>, --read-pause=<num>
+Pause <num> milli-seconds after sending command to inverter before reading response from inverter (1-10000)
+.TP
+.B -u, --rpt-read-pause
+Report when/that pausing before read
+.TP
+.B -V, --version
+Aurora communications program version
+.TP
+.B -v, --inv-version
+Query for Version string
+.TP
+.B -W, --swap-endian
+Swap Endianness
+.TP
+.B -w <num>, --lock-wait=<num>
+Milliseconds to wait to lock serial port. (10.0-30000.0 mS) Default 0.0 mS meaning only one attempt to get the lock will be made. A random number of attempts to lock the port (minimum of 10 maximum of 100 per second) will be done for a maximum 30 second duration.
+.TP
+.B -X, --rts-cts
+Enable RTS/CTS on the serial port.
+.TP
+.B -x, --xon-xoff
+Enable XON/XOFF on the serial port.
+.TP
+.B -Y <num>, --retries=<num>
+Retry failed communications with inverter up to <num> times (1-100)
+.TP
+.B -y, --rpt-retries
+Report the number of retires done
+
+.SH DESCRIPTION
+\fBaurora\fP is a program that communicates with Aurora Magnetek Photovoltaic (solar) Power Inverters written by Curt Blank.  It can retrieve data and statistics from a variety of Aurora Inverters through either USB or Serial interfaces.
+
+.SH EXAMPLES
+
+aurora -T -c -e -d 0 -a 2 -w 15 /dev/ttyS0
+
+aurora -Y 100 -T -a 2 -w 10 -e /dev/ttyUSB0
+
+.SH "SEE ALSO"
+.TP
+\fIhttp://www.curtronics.com/Solar/AuroraData.html\fP
+.PD
+
+.SH AUTHOR
+This manpage was initially written by Dustin Kirkland <kirkland@canonical.com> and is maintained by Curt Blank <solar@curtronics.com>.  Permission is granted to copy, distribute and/or modify this document under the terms of the GNU General Public License, Version 2 published by the Free Software Foundation.

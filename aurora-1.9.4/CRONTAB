@@ -1,0 +1,10 @@
+
+I use this cron command to collect data when the sun is out. It creates
+a new data file for each day based on the date.
+
+* 5-21 * * * /usr/local/bin/aurora -T -c -e -d -a 2 /dev/ttyS1 >> /data01/Solar/data/`date +\%Y\%m\%d`.dat 2>> /data01/Solar/logs/`date +\%Y\%m\%d`.err
+
+or 
+
+* 5-21 * * * /usr/local/bin/aurora -T -c -e -d -a 2 -o /data01/Solar/data/`date +\%Y\%m\%d`.dat /dev/ttyS1 2>> /data01/Solar/logs/`date +\%Y\%m\%d`.err
+

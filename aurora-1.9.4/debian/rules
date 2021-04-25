@@ -1,0 +1,8 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+# Don't use the upstream install target, as it installs to /usr/local/bin
+override_dh_auto_install:
+
+%:
+	dh  --with quilt $@

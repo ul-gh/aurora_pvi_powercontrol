@@ -1,0 +1,15 @@
+Source: aurora
+Section: misc
+Priority: extra
+Maintainer: Dustin Kirkland <kirkland@ubuntu.com>
+Build-Depends: debhelper (>= 7.0.50~), quilt (>= 0.46-7~)
+Standards-Version: 3.9.2
+Homepage: http://www.curtronics.com/Solar/AuroraData.html
+
+Package: aurora
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: communicate with an Aurora Magnetek Photovoltaic (solar) Power Inverter
+ This program will communicate over serial or USB connections to Aurora
+ Photovoltaic Inverters.  It can retrieve and process the statistics
+ gathered by the inverter itself.

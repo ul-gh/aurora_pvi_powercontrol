@@ -1,0 +1,348 @@
+
+   0 - Reporting Bugs
+   I - Intro
+  II - -k option
+ III - Setting the Inverter Time
+  IV - Some Known Issues
+   V - Operation Tid Bits
+  VI - ** NEW -q --energy-sent option **
+ VII - ** NEW -L, --adjust-time option **
+VIII - removed ** Experimental ** status from -k, --daily-kwh
+  IX - more on setting Setting the Inverter Time
+   X - reading from inverter more aggresively and patiently
+
+**********************************
+
+0 - Reporting Bugs
+
+If you run into things that you think might be a bug and 
+would like to report it please follow these guidelines to
+streamline the process.
+
+If a bad "rc" value in the form of "(-1 nn nn)" is reported
+please include it in your message.
+
+If it can be reproduced include the stdout output and the 
+verbose stderr output in the following format.
+
+aurora -b <options & device> >option.dat 2>option.err
+
+Example:
+aurora -b -a2 -k366 -Y10 /dev/ttyS0 > k.dat 2>k.err
+
+Adding numbers after the (in this case k) if multiple ones 
+are sent.
+
+**********************************
+
+I - Intro
+
+If you are using this software to download the data from your
+Aurora Inverter and have a public web site showing your data 
+send me an email with the URL. I will be creating a web page 
+on my Solar Web Site with those links. Tell everyone that you
+know about this to do that also.                             
+Email Solar at curtronics dot com with your URL.             
+
+If you are using this software to download data from your
+Aurora Inverter and are doing so using the USB port on the
+inverter I would like to hear from you. I'm particularly 
+interested it whether or not you are getting lots of CRC 
+errors. I am working with one installation that is constantly
+getting CRC errors on a USB connection and has to run the   
+program multiple times before it successfully gets the data.
+I'd like to determine where the problem is in order to work 
+towards eliminating it.                                     
+Email Solar at curtronics dot com with your info. Thank you.
+
+**********************************
+
+II - -k option
+
+The -k option is considered ** Experimental ** because it is
+an un-Publicly documented option so it may or may not provide
+correct information. It appears the inverter stores the past 
+365 days of KWH prodcution data in a block of memory. The 
+exact location of that memory block seems to differ in each 
+inverter, it may be model related it may not. A pointer is 
+available that points to the current days value but no offset
+information has been found to indicate at what position in 
+the block of memory that is. So the beginning and end of the 
+block of memory is not accurately known. aurora attempts to 
+watch for the end of the block and then loop back to the 
+beginning of the block (round robin storage) to continue 
+gathering data. This method works for inverters that have 
+366 days (current day included) worth of data but for inveters
+that don't the results of the readings are currently unknown.
+
+**********************************
+
+III - Setting the Inverter Time
+
+Setting the time on the inverter using the -S option has been 
+known to clear (reset to zero) the energy values reported by 
+the -e option (except the Total Energy reported value) and 
+also the history reported by the -k option but apparently not 
+for the -q option. This is how it behaves on my inveter that 
+has a manufacture date of 06 16. However on newer inverters it 
+may no longer do this, i.e. zero the data. I know of one inverter 
+that has a manufacture date of 10 42 that setting the time via 
+the -S option did not clear these data values.
+
+**********************************
+
+IV - Some Known Issues
+
+There have been many reports of communications problems when
+using the USB port on Aurora inverters. A work around was added
+awhile back, the -Y option to get around this issue. Recently 
+someone indicated that there needs to be a minimum of 400 uS  
+between the sending of commands to the inverter when          
+communicating via the USB port. With this information in hand 
+the -P option was added and testing was conducted using the -P
+option on inverters that are communicating via the USB port that
+exhibit this problem. In some cases it corrected this USB       
+problem, in other cases it did not correct the problem and the  
+-Y option still had to be used. In short, the -P option will    
+cause aurora to not send commands unless the time specified in  
+the -P option has elapsed since the last command was sent. So,  
+if you are experiencing problems with communicating via the USB 
+port try using the -P option starting with a value of 400 and   
+increase or decrease the value until reliable communication is  
+attained. If that does not eliminate the problem then try using
+the -Y option.                                                  
+
+There have been reports saying that Power One is claiming the
+USB port is not designed/should not be used for continuous data
+gathering/communication. However, this has not been confirmed with
+Power One.
+
+Getting more reports from users that Power One is claiming the
+USB port is not designed/should not be used for continuous data
+gathering/communication. So more users are switching to RS-485 
+adapters, that being said it has been reported that using RTS/CTS
+control on the serial port when using a RS-485 adapter improves 
+the communication reliability. So the -X option has been added to
+enable RTS/CTS control on the serial port.
+
+**********************************
+
+V - Operation Tid Bits
+
+If aurora cannot communicate with the Aurora Inverter it dies a
+silent death to STDOUT but reports the lack of response to STDERR.
+This is on purpose for data collection purposes so you can pipe
+the data to a file without having any error messages in the file.
+If a CRC error is encountered it will also be reported on STDERR
+regardless. If in doubt about what's going on, use the verbose
+option to see.
+
+This program has been tested using a standard serial port, i.e.
+/dev/ttyS1, and a USB serial port, /dev/ttyUSB0 with equal success.
+The USB serial port was the BB DYNEX variety, DX-UBDB9 using the
+Prolific Technology, Inc. PL2303 Serial Port. Development and
+testing was done on a SuSE Linux 10.0 (custom gen'd kernel)
+AMD Sempron 3000 laptop system, for ease of being able to test by
+the Aurora Inverter, final destination has it running the data
+collection on a SuSE Linux 10.0 (custom kernel) AMD Athlon(tm) XP
+3000+ server.
+
+An update to the platform in use, it is now SuSE Linux 11.4 with
+their default kernel on a AMD Phenom 1090T with 16G of memory and
+a battery backed up caching raid controller.
+
+**********************************
+
+VI - ** NEW -q --energy-sent option **
+
+This was reverse engineered since it is not in the documentation 
+that is released to the public. Therefore, it may not work on 
+every Aurora inverter. If you suspect it isn't reporting the 
+correct data or they are any problems when using it *PLEASE* 
+report them so as to help improve this option and aurora on the
+whole.
+
+This option will report the amount of energy sent to the grid at
+10 second intervals for the past 24 hours. Well that's according 
+to the manufacturer. In use it may report more then 24 hours worth
+of data, not sure if it will report less then 24 hours so if you 
+see that it does please report that fact.
+
+When this option is invoked the timestamp of the reported data may 
+look like YYYYMMDD-nnnn instead of 20111106-09:23:14 for example.
+Where YYYYMMDD is just that, those characters and not a real date
+and time, the nnnn will be an incrementing sequence. This is due to 
+not having found a timestamp packet in the data stream as of yet.  
+Once a timestamp packet is found the valid date and time for the 
+energy values will then be reported.
+
+This is not a problem IMO, the manufacturers Windoze software gets 
+the same data they just choose to hide it instead of displaying it. 
+In other words, they throw out any data that is received until a
+timestamp packet comes their way. This will more then likely always
+occur to some degree, the reason being due to how this historical
+data is stored in the inverter. At some point in time the timestamp
+for the oldest data gets overwritten thus is no longer available.
+
+So why does aurora choose to display it? Well a couple of reasons.
+In my experience it can take 10 minutes for this option to run to
+completion, it's doing a lot of I/O's to the inverter. If nothing, 
+i.e. no output, is displayed during lets say the first 3 minutes, 
+some people may think it's not working when it actually is. Second, 
+even if the date and time is not known for that data it may be 
+possible to sync its date and time using previously recorded data 
+for the time period in question.
+
+Once the date and time is displayed if the time looks to be off 
+please report that fact. And note, the time displayed is that of 
+the time that was on the inverter when it stored the data. So if 
+the inverters time is off by 10 minutes, or and hour, that may make 
+it look like something is wrong so check the time on the front 
+panel on the inverter. The -t option could be used to do that but 
+there could be an issue due to timezone settings so the best bet is 
+to look at the inverter.
+
+And in the 'It would be nice' department... Before anyone asks, 
+having the ability to skip the data that the date and time is not
+known for, or picking a starting time, etc., would be nice but... 
+Because of how the data is stored it has to be read through in a
+serial manner in order to find the date and time for the block of
+data following it. There are no entry points except for the 
+beginning, there are no offsets or block length values, nothing.
+So the data has to be read in a serial manner and as long as it's
+being read, it might as well be displayed.
+
+Here is the output in a graphical format:
+http://www.curtronics.com/Solar/Samples/EnergySentSample.html
+
+**********************************
+
+VII - ** NEW -L, --adjust-time **
+
+This option will automatically adjust the inverter's time if it is
+found to differ from the computer's time and then only if the 
+following constraints are met.
+
+If <num> is >= 1 the inverter's time will only be changed to match
+the time on the computer if the inverter's time differs from the 
+computer's time by <num> or more seconds.
+
+If <num> is 0 (zero) a Daylight Savings Time check will be done.
+This check will only modify the time on the inverter on the day that
+any Daylight Savings Time change takes effect and only after it has
+taken effect and also only if the time is found to differ by 15 
+minutes or more. This check will compare the inverter's current time 
+to the computer's current time. If the results of the comparision 
+indicate the two times differ by 15 minutes or more and it is on the 
+day that a Daylight Savings Time change takes effect, and after it has
+taken effect, the inverter's time will be set to match that of the 
+computer.
+
+The added 15 minute constraint when doing the Daylight Savings Time 
+check is to prevent frivolous changing of the time. The clocks on the 
+inverters tend to have a large amount of drift over time. Since the 
+change to or from Daylight Savings Time is typically an hour, using a
+minimum window of it differing by 15 minutes will help to insure that 
+the time is only changed once on that day even if this option is 
+continually used throughout the day.
+
+It would be safe to use this option all the time it won't change the 
+time unless the constraints are met according to the above. The idea 
+is to have it running using the "0" choice on the day that a Daylight 
+Savings Time change takes effect. That way first thing in the morning 
+once the inverter wakes up its time will be set properly and internal 
+history will be recorded with the correct date and time.
+
+***** WARNING ******    ****** WARNING ******    ****** WARNING *****
+Setting the Date and Time has been known to clear all History except 
+"Total Energy" on some inverters. This is not caused by aurora but
+instead is how some inverters are designed to operate. It is suggested 
+that the -S option be used to determine if your inverter exhibits this
+behavior and if it does and is unacceptable then do not use this option.
+
+**********************************
+
+VIII - removed ** Experimental ** status from -k, --daily-kwh
+
+After further testing I have decided to remove the ** Experimental **
+status from this option. One big question in its operation was how it
+would handle inverters that had been running for less then a year thus
+did not have a full years worth of data to report. Field testing on a
+new inverter install has revealed that it operates as designed, as I
+had hoped, but as with anything that is reverse engineered one never
+knows for sure until it can be tested. But do remember, it was reverse
+engineered so if any anomalies are encountered please report them with 
+verbose ouput.
+
+**********************************
+
+IX - more on setting Setting the Inverter Time
+
+It has come to my attention that the Set Time function is no longer
+documented in the Protocol Documents supplied by Power One, at least
+not the two latest ones I have. So it appears they quietly removed 
+that function from their documentation, probably instead of making it
+work properly, it was easier to just undocument it, but it still works 
+and may or may not on all inverters. That being said...
+
+Sometimes when setting the time on the inverter using the -S or -L 
+options the inverter may not return the status of that operation in a
+timely fashion but the time may still have been set. When this occurs 
+you will see the message "no response, comparing time" if you then see 
+the message "Inverter date/time set (checked)" the time was successfully 
+set within +/- 2 seconds. If you do not see this message the time on the 
+inverter is not within 2 seconds of the computer. If you see the message 
+"Inverter date/time set (successful)" the inverter did respond and the 
+time was successfully set.
+
+As mentioned previously on some inverter models, typically older 
+inverters, history data may be cleared (zeroed) for Daily, Weekly, 
+Monthly, and Yearly Energy and for --daily-kwh (-k) history, but
+not for Total Energy and apparently not for --energy-sent (-q) history
+either.
+
+**********************************
+
+X - reading from inverter more aggresively and patiently
+
+How aurora reads responses from the inverter has changed but it's a
+double edged sword. It will try harder to get each character from the
+inverter at the cost of taking a lot more time to do so. This may
+improve USB communications to the inverter.
+
+It will wait up to the value supplied with the -R (--read-timeout) or -l 
+(--read-wait) option per character or the sum of both if both are used. 
+Since all repsonses are 8 characters if -R 5000 (5 seconds) is used that 
+could make the time it takes to read the response approach 40 seconds. 
+Since most options require multiple operations (commands to the inverter) 
+to get all the data this could make it look like aurora is not doing 
+anything. If in doubt run aurora in verbose mode (-b) to see what it is 
+doing.
+
+If running aurora every minute to collect data this could mean that a
+previous running instance of aurora (when using a large value for the -R 
+and/or -l option) hasn't completed executing when another instance of 
+aurora starts running. To avoid this scenario use the -M option to give 
+aurora a maximum amount time to run, specified in seconds. If aurora has 
+not completed in the amount of time specified by the -M options value it 
+will exit when it has exceeded the amount of time that was specified.
+
+If having problems communicating with the inveter it is recommended that 
+the -l option be tried first using values up to and including 10. If that 
+does not improve the communication then try the -R option starting at 500 
+(without using the -l option) and working up to a value of 2000. And then  
+if still encountering problems use a combination of the -l option and the  
+-R option. Noting that the amount of time that aurora will try to read 
+each character from the inverter will be the sum of the times specified by
+the -l and -R options.
+
+Example: Using --read-wait=15 --read-timeout=3000 aurora will wait
+         (15 * 1/10) + (3000 / 1000) =
+             1.5     +      3.0      = 4.5 seconds to read each character 
+of the response from the inverter. Each response from the inveter is 8
+characters in length so reading one complete response could take up to 36
+seconds in this example and reading some data from the inverter requires 
+multiple responses.
+
+
+

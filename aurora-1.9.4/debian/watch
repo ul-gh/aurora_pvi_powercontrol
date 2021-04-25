@@ -1,0 +1,2 @@
+version=4
+http://www.curtronics.com/Solar/AuroraData.html /Solar/ftp/aurora-(.+).tar.gz

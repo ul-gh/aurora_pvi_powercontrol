@@ -1,0 +1,33 @@
+
+Starting with version 1.6.9 the 'make' tries to determine the 
+optimum compile method. Most of the time you can simply untar 
+and do a 'make' and you're good to go on AMD and Intel platforms. 
+However on other platforms such as ARM processors you may have to 
+manually tweak the Makefile to optimize the compile. Then doing 
+'make install' will put the binary in /usr/local/bin/ and the 
+manpage in /usr/local/share/man/man1/ (Thank you Dustin Kirkland 
+for initial creation of the manpage.)
+
+If you get any errors from the 'make' please provide the output
+of the 'make' including the command line so that the process can
+be improved.
+
+You can do a 'make check' to determine how the compile will be
+done. It will report 64bit verses 32bit and the 'arch' and 'tune'
+flags used for the processor. If it reports 'NoNative' the 'arch'
+and 'tune' flags will have to be manually set if you chose to do
+so for optimization.
+
+In that case you may have to uncomment and set/adjust the "ARCH =" 
+and "TUNE =" variables at he beginning of the Makefile and set 
+them to the proper values for your processor. Manually setting
+these variable will override any automatic determination of them.
+You can then do a 'make check' to see if the values you set will
+be used. If you set the values to 'native' and you still see 
+NoNative that can be due to gcc not supporting 'native' due to
+its version or the architecture.
+
+You can access the documentation via 'aurora -h' or the manpage,
+or for more in depth documentation, read the code.
+
+[Content moved to README >= v1.6.5]

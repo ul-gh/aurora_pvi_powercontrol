@@ -1,0 +1,242 @@
+NOTE!! I'D LIKE TO HEAR FROM CENTRAL OR TRIO OWNERS IF THE OPTIONS INCLUDED
+       HEREIN WORK OR NOT BECAUSE I'D LIKE TO PURSUE WHAT IS HERE AND MORE.
+       --------
+       This is kind of some early work to improve 3 phase reporting and
+       include reporting for Central ind Trio nverters. There were some issues
+       with floating point numbers not being converted correctly but last I 
+       heard they were correct without any changes made to aurora so I'm
+       skeptical. It is possible it was due to the computer/architecture/OS
+       that was being used and not an aurora issue. So PLEASE PLEASE if you
+       are using aurora with a 3 phase or Central or Trio inverter and notice
+       any anomalies with aurora do let me know.
+
+v1.9.4 - gcc compiler change mandated removing declarations for VersionC and
+         VersionSHc from main.c because they're declared in a include file
+
+v1.9.3 - if returning _ERROR_ and verbose print out debug info
+       - modified float functions _ERROR_ handling
+
+v1.9.2 - modify Makefile to allow manual disabling of -march compile option
+         if necessary to compile for paltforms other then where the compile
+         is being done.
+
+v1.9.1 - reduce the time spent sleeping while waiting to get the lock on the 
+         serial port. **NOTE** if you are using "-w <num>, --lock-wait=<num>"
+         you will need to adjust the value <num>. See the -h help or Man page
+         for the updated constraints. A random number at a minimum of 10 to a 
+         maximum of 100 checks to lock the port will be done per second for a 
+         maximum of 30 seconds.
+       - changed two subroutines type to unsigned and their return value
+         which indicates an error occured to allow for larger values to be
+         returned
+ 
+v1.9.0 - fixed a compile warning and seg fault issue that would occur on some 
+         but not all architectures
+
+v1.8.9 - improve device lock file handling mainly with stale lock handling to
+         take into account other processes not associated with aurora using 
+         the RS-485 port.
+
+v1.8.8 - fixed negative values being reported in verbose mode
+
+v1.8.7 - ** NOTE ** -E, --get-dsp-3phase has changed to -3, --get-dsp-3phase
+       - temperatures can be below zero i.e. negative (inverters installed 
+         outdoors)
+       - NOTE: -e, --get-energy excludes Aurora Central
+       - added -O <num>, --central=<num> ** Experimental ** Indicates 
+         Aurora Central (Work in process)
+       - added -E <num>, --get-energy-central=<num> Get Cumulated Float  
+         Energy readings (Central & TRIO only)
+       - correct reporting wrong model when -Q is not used
+       - updated -v inverter version reporting 
+       - update COLUMNS.key file
+
+v1.8.6 - calculate tm_gmtoff if it is not supplied in tm structure - it was
+         requested to just #ifdef it out but that could cause the -k, -q, 
+         -L, -S, & -t options to set/report dates/times incorrectly.
+         make (Makefile) will determine whether to calculate it or use the
+         tm structure
+
+v1.8.5 - NOTE: added -Q, --use-qmult option to use inverter specific 
+         Multiplier (if known) for -q, --energy-sent. These Multiplers were 
+         were added in version 1.7.8 and used by defualt. These Multipliers 
+         are no longer used by default so this option must be used if you
+         want the Multiplier used. This Multiplier adjusts the values 
+         reported by -q, --energy-sent.
+       - added -K, --use-kmult option to adjust vaules reported by -k, 
+         --daily-kwh by value supplied with option. Seems how the data is
+         being stored may be different on different inverter models
+
+v1.8.3 - make sure errno is initialized
+       - set the mask on the binary on make
+
+v1.8.0 - minor changes to help and man page
+       - initialize some variables so as to avoid compiler warnings
+       - check validity of time value returned by query to inverter to
+         get its time
+       - allow display of out of order dates for -k (--daily-kwh) if they 
+         appear to be valid this may then require the output be sorted
+       - handle out of order dates for -k (--daily-kwh) by sorting them 
+         and suppressing duplicate entries for a date
+
+v1.7.9 - modify -i, --get-count option to accept a bitmask indicating 
+         which couters should be displayed and whether or not the Partial
+         Energy counter should be reset to zero
+
+v1.7.8 - README updated
+       - changed --delay to --read-wait as the long option for -l so as to 
+         better reflect it's function
+       - --daily-kwh date started tomorrow instead of today, adjusted 
+         timebase
+       - dynamically adjust timebase for --daily-kwh if it looks to be off
+       - watch for out of order or duplicate dates in --daily-kwh
+       - be more aggressive and at the same time patient trying to read 
+         characters from slow to respond inverters (READ! the README for
+         the impacts this has)
+       - added -M option maximum amount of time in seconds that aurora 
+         will run
+       - updated list of models
+       - use multiplier for --energy-sent if known for inverter model
+       - revamp --daily-kwh after discovering data may not always be
+         contiguous
+
+v1.7.7 - add bad return code tracking to identify operation
+       - fix W not kW in all spots for --energy-sent. My bad.
+       - timing issues again setting the inverter time waiting for
+         inverter response. See README for more information.
+
+v1.7.6 - --energy-sent values are W not kW Doh!
+       - Grid Current & Grid Power can now return negative values. This
+         occurs when the PV panels are not providing enough power to 
+         run the inverter so it sucks some power from the Grid
+
+v1.7.5 - fix man page for -W
+       - fixed some bad trailing characters showing up in date strings
+         on MIPS platforms
+       - -k will now also output to stdout when -b is used not just to 
+         stderr. This was by design while -k was considered experimental
+
+v1.7.4 - if a bad return code is returned from any function display a 
+         message to STDERR before exiting (used to just exit silently)
+       - added -W option to swap endian for ARM and MIPS architectures
+       - fixed -k, -n, & -p strings output that were overflowing on occasion
+       - make sure the value passed to the -d option is numeric
+       - removed ** Experimental ** status from -k, --daily-kwh see the 
+         README for more information
+       - tweaked the new -q, --energy-sent option, make sure the last data 
+         value is reported when starting in the middle of a WORD value 
+         pair and had the same strings output issue as -k, -n, & -p on 
+         MIPS architectures
+       - fixed a malloc corruption when trying to open the lock file
+
+v1.7.3 - changed permissions on the aurora executable to 4711 for none
+         root users to be able to run aurora. Had it set to 4755 
+         orginally but pulled it back to 4750, needs to be at least 4711.
+       - added -L --adjust-time option. See the README for information 
+         regarding this option
+
+v1.7.2 - added -q --energy-sent option, see the README for important
+         information regarding this option
+       - remove size restriction on monetary identifier of the -C option
+       - changed permissions on the aurora executable to 4750. This allows
+         users other then root to run aurora and not fail due to 
+         inaccessibility of the lock file when reading/writing it
+       - remove size restriction on various strings
+       - checked the TimeBase now that we're back on CST and it checks 
+         out correctly. Timezone calculations work. Can remove it from
+         the TODO list
+
+v1.7.1 - modify "-d --get-dsp" option. **NOTE** if using "-d" it must be
+         changed to "-d 0", if using "--get-dsp" no change is needed
+       - modify "-C, --calc-value=<num[:$]>" added "[:$]" to allow monetary
+         type to be chosen
+
+v1.7.0 - clean up some compiler warnings for variable set but not used
+
+v1.6.9 - Starting with version 1.6.9 the 'make' tries to determine the gcc 
+         'march' & 'mtune' compile flags for optimization
+       - corrected joule reading, output conversion error
+       - Makefile modifications no longer have to modify the 64bit flag, may
+         not have to modify "arch" & "tune" parameters if gcc >= 4.2 on AMD
+         & Intel platforms
+       - fixed a integer conversion issue for -k due to some architectures
+       - fixed bizarreness with -bt
+       - adjust TimeBase to true UTC-0000 and take into account timezone in 
+         GetTime (-t) and SetTime (-S) functions
+       - added 'make check' that reports what the compile will be for
+         architecture wise
+       - tweaked Makefile to determine "arch" & "tune" using gcc if possible
+       - tweaking Makefile for ARM processors
+       - tweaked Makefile again for 'make' versions older then 3.82 which
+         don't have the 'undefine' directive
+       - increase the allowed values from 31 to 63 for inverter address (-a)
+         as allowed in newer inverters
+
+v1.6.8 - added -k option to read past days production - this is considered 
+         experimental and may or may not work in all instances and especially
+         if there is no data for all the days requested - please report any 
+         problems/anomalies encountered
+       - removed -fpack-struct from the compiler CFLAGS - once again caused 
+         longopts not to work
+       - added -X option to enable RTS/CTS on the serial port
+
+v1.6.7 - added -A option to read "Last four alarms"
+       - fix using wrong param when displaying TransState message
+       - pass TransState the command description so if it gets a non-zero 
+         status it can report for what command it got it
+
+v1.6.6 - added -P option to throttle commands sent to the inverter
+
+v1.6.2 - added -D & -E to report more DSP information
+
+v1.6.0 - added -U option to delay read after sending command to inverter and
+         -u option to report it
+       - version numbering now Number dot Number dot Number
+       - manpage now included
+       - 'make' now has 'install' and 'uninstall' options
+
+v1.5-7 - fix sizeof pointer passing in memset
+       - add -Y retries option and -y option to report the number of attempts
+         made and use in the Communicate function 
+       - in ReadNextChar restore serial port settings and clear lock if exiting
+
+v1.5-5 - added -x option to enable XON/XOFF
+
+v1.5-1 - serial port configuration tweaks
+
+v1.5-0 - Starting with v1.5-0 this work based on Power One's 'Aurora Inverter
+         Series - Communication Protocol -' document, Rel. 4.6 25/02/09
+
+v1.4-5 - add -o option to output data to a file
+
+v1.4-4 - don't set lckCNT = -1 when clearing stale serial port lock really
+         bonehead move... As Dierks Bentley would say, What was I thinkin'?
+
+v1.4.3 - add cCommandEnd = '\0'
+
+v1.4.2 - disable XON/XOFF flow control on output
+
+v1.3-4 - fix determining if serial port is in use
+       - correct szSerBuffer size 
+
+v1.3-3 - correct an error in strftime that only may show up 
+         in the first or last week of the year
+
+v1.3-2 - take into account Daylight Savings Time when 
+         setting the Aurora's time
+
+v1.3-1 - new release
+
+v1.3-0 - new release
+
+v1.2-9	- fix -n & -p problem that left serial port locked
+	- disable all options except -d & -e when -c is used
+	- only format time for columns for options -d or -e
+	- all verbose output goes to stderr
+	- update help
+
+v1.2-5	- add locking of serial port
+
+v1.0-0  -  This work based on Magnetek's 'Aurora PV Inverter - Communications
+           Protocol -' document, Rel. 1.8 09/05/2005
+

@@ -1,0 +1,26 @@
+/*
+ * aurora - Communications with Magnetek Aurora Inverter
+ *
+ * Copyright (C) 2006 Curtis J. Blank curt@cutronics.com
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program may be used and hosted free of charge by anyone for
+ * personal purposes as long as this and all included copyright
+ * notice(s) remain intact.
+ *
+ * Obtain permission before selling the code for this program or
+ * hosting this software on a commercial website, excluding if it is
+ * solely hosted for distribution, that is allowable . In all cases
+ * copyright must remain intact.
+ *
+ * This work based on Magnetek's 'Aurora PV Inverter - Communications
+ * Protocol -' document, Rel. 1.8 09/05/2005
+ *
+ * Special thanks to Tron Melzl at Magnetek for all his help including, 
+ * but not limited to, supplying the Communications Protocol document
+ *
+ */

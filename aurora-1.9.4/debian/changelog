@@ -1,0 +1,122 @@
+aurora (1.9.4-0ubuntu1) hirsute; urgency=medium
+
+  * New upstream release.
+  * debian/watch: Added.
+  * debian/patches/build: Remove (unused/unneeded).
+
+ -- Logan Rosen <logan@ubuntu.com>  Wed, 06 Jan 2021 17:28:34 -0500
+
+aurora (1.9.3-0ubuntu1) yakkety; urgency=medium
+
+  * new upstream release
+  * per maintainer (Curtis Blank), we should set ARCH=NONE, TUNE=generic
+    in our Makefile
+
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Mon, 01 Aug 2016 16:23:50 -0500
+
+aurora (1.9.1-0ubuntu1) yakkety; urgency=medium
+
+  * new upstream release
+
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Wed, 06 Jul 2016 15:11:39 -0500
+
+aurora (1.9.0-0ubuntu1) yakkety; urgency=medium
+
+  * new upstream release
+
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Wed, 06 Jul 2016 12:39:40 -0500
+
+aurora (1.8.8-0ubuntu1) vivid; urgency=medium
+
+  * new upstream release
+
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 27 Jan 2015 20:37:21 -0600
+
+aurora (1.8.7-0ubuntu1) vivid; urgency=medium
+
+  * new upstream release
+
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Mon, 26 Jan 2015 18:19:31 -0600
+
+aurora (1.7.3-0ubuntu1) precise; urgency=low
+
+  * new upstream release
+
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 15 Nov 2011 12:08:03 -0600
+
+aurora (1.7.1-0ubuntu1) precise; urgency=low
+
+  * new upstream release
+
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Mon, 17 Oct 2011 14:05:43 -0500
+
+aurora (1.7.0-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release
+  * debian/patches/series: dropped build patch
+
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Sun, 18 Sep 2011 19:39:23 -0500
+
+aurora (1.6.8-0ubuntu1) oneiric; urgency=low
+
+  * New upstream release
+  * debian/patches/fix_build.patch: updated
+  * debian/control: bump standards
+
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Sat, 30 Jul 2011 12:41:17 -0500
+
+aurora (1.6.7-0ubuntu1) natty; urgency=low
+
+  * New upstream release
+  * debian/control:
+    - update standards version
+    - versioned build dependencies for debhelper and quilt
+  * debian/source: added per lintian
+
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 18 Jan 2011 10:26:47 -0600
+
+aurora (1.6.6-0ubuntu1) maverick; urgency=low
+
+  * New upstream release (bug fixes)
+
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Fri, 20 Aug 2010 14:32:11 -0500
+
+aurora (1.6.4-0ubuntu1) maverick; urgency=low
+
+  * New upstream release
+
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Sun, 25 Jul 2010 03:51:14 +0200
+
+aurora (1.6.3-0ubuntu1) maverick; urgency=low
+
+  * New upstream release
+
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Sat, 24 Jul 2010 21:20:44 +0200
+
+aurora (1.6.0-0ubuntu3) lucid; urgency=low
+
+  * debian/control: add quilt to build depends, fix FTBFS
+
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Thu, 25 Mar 2010 21:43:38 -0700
+
+aurora (1.6.0-0ubuntu2) lucid; urgency=low
+
+  * debian/rules: apply patches
+  * debian/patches/fix_build.patch: drop specific flags that cause
+    FTBFS on non-x86 arches
+
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Thu, 25 Mar 2010 18:58:19 -0700
+
+aurora (1.6.0-0ubuntu1) lucid; urgency=low
+
+  * Merge from upstream, has a few stabilization fixes
+  * Drop local manpage, since this is now upstream
+
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 23 Mar 2010 13:03:03 -0700
+
+aurora (1.5.7-0ubuntu1) lucid; urgency=low
+
+  * Initial packaging for Ubuntu, LP: #538533
+  * Manpage has been sent upstream, should be dropped in a future upload
+
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Sat, 13 Mar 2010 12:34:32 -0600
