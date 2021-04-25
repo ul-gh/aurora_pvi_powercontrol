@@ -36,15 +36,12 @@ uint16_t crc16_CCITT(char *data_p, unsigned short length) {
 }
 
 
-class AuroraPVI
-{
+class AuroraPVI {
 public:
-    AuroraPVI()
-    {
+    AuroraPVI() {
     }
 };
 
-int main()
-{
+int main() {
     printf("Foo");
 }

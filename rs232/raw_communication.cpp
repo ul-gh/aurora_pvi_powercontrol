@@ -5,16 +5,22 @@
 #include <fcntl.h>   // File control definitions
 #include <errno.h>   // Error number definitions
 #include <termios.h> // POSIX terminal control definitions
-#include <sys/ioctl.h>
+#include <sys/ioctl.h> // Linux ioctl definitions
 
 // Linux termios subsystem configuration
 //
 // See: https://man7.org/linux/man-pages/man3/termios.3.html
 //
-int set_serial_raw_mode(int fd) {
+int set_serial_raw_mode(
+        int fd,
+        speed_t baudrate = B9600,
+        int char_size = 8, // Number of bits is 5, 6, 7 or 8
+        int parity = 0, // 0: No parity. 1: Odd parity. 2: Even parity
+        int stopbits = 1 // One or two
+        ) {
     int err = 0;
     struct termios tty;
-    memset(&tty, 0, sizeof tty);
+    memset(&tty, 0, sizeof(tty));
 
     // Get current configuration
     err = tcgetattr(fd, &tty);
@@ -24,17 +30,36 @@ int set_serial_raw_mode(int fd) {
     }
 
     /* Set Baud Rate */
-    err |= cfsetospeed(&tty, B115200);
-    err |= cfsetispeed(&tty, B115200);
-
-    // Set mode 8N1
-    tty.c_cflag &= ~CSIZE; // Clear size bits
-    tty.c_cflag |= CS8; // Set new character size
-
-    tty.c_cflag &= ~PARENB; // Disable parity
-    //tty.c_cflag &= ~PARODD; // If parity enabled, use even parity
-    tty.c_cflag &= ~CSTOPB; // One stop bit; two if set
-
+    err |= cfsetospeed(&tty, baudrate);
+    err |= cfsetispeed(&tty, baudrate);
+    // Clear character size bits
+    tty.c_cflag &= ~CSIZE;
+    // Set new character size
+    switch(char_size) {
+        case 5: tty.c_cflag |= CS5; break;
+        case 6: tty.c_cflag |= CS6; break;
+        case 7: tty.c_cflag |= CS7; break;
+        case 8: tty.c_cflag |= CS8; break;
+        default: err |= 1;
+    }
+    // Set parity
+    switch(parity) {
+        case 0: tty.c_cflag &= ~PARENB; break; // No parity
+        case 1: tty.c_cflag |= PARENB | PARODD; break; // Odd parity
+        case 2: tty.c_cflag |= PARENB;
+                tty.c_cflag &= ~PARODD; break; // Even parity
+        default: err |= 1;
+    }
+    // Set number of stop bits
+    switch(stopbits) {
+        case 1: tty.c_cflag &= ~CSTOPB; break; // One stop bit
+        case 2: tty.c_cflag |= CSTOPB; break; // Two stop bits
+        default: err |= 1;
+    }
+    if (err) {
+        fprintf(stderr, "Incorrect configuration settings, see man 3 termios\n");
+        return err;
+    }
     tty.c_cflag |= CREAD | CLOCAL; // Enable receiver and ignore HW modem ctrl lines
     //tty.c_cflag &= ~CRTSCTS; // no HW flow control
 
@@ -64,14 +89,19 @@ class RawSerial {
 public:
     int fd = -1;
 
-    RawSerial() {
-        //int USB = open( "/dev/ttyUSB0", O_RDWR);
-        fd = open("/dev/ttyUSB0", O_RDWR | O_NONBLOCK | O_NDELAY);
+    RawSerial(const char *device = "/dev/ttyUSB0",
+              speed_t baudrate = B9600,
+              int char_size = 8, // Number of bits is 5, 6, 7 or 8
+              int parity = 0, // 0: No parity. 1: Odd parity. 2: Even parity
+              int stopbits = 1 // One or two
+              ) {
+        //int USB = open(device, O_RDWR);
+        fd = open(device, O_RDWR | O_NONBLOCK | O_NDELAY);
         if (fd < 0) {
             fprintf(stderr, "Unable to open port\n");
             exit(1);
         }
-        set_serial_raw_mode(fd);
+        set_serial_raw_mode(fd, baudrate, char_size, parity, stopbits);
     }
     virtual ~RawSerial() {
         close(fd);
@@ -90,13 +120,13 @@ public:
 
 };
 
-// Linux TTY ioctl calls must be use for low-level operations like
+// Linux TTY ioctl calls must be used for low-level operations like
 // level testing or setting of the HW modem control lines.
 //
 // See: https://man7.org/linux/man-pages/man4/tty_ioctl.4.html
 //
 int main(void) {
-    auto port = RawSerial{};
+    auto port = RawSerial{"/dev/ttyUSB0", B9600, 8, 0, 1};
 
     int n_chars;
     char c;
